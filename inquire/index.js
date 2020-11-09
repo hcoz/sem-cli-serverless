@@ -1,4 +1,5 @@
 const https = require('https');
+const querystring = require('querystring');
 const constants = require('../utils/constants.json');
 // const { search } = require('../utils/db-query');
 
@@ -7,7 +8,7 @@ module.exports = async function (context, req) {
     const options = {
         hostname: 'api.wit.ai',
         method: 'GET',
-        path: `/message?v=20201109&q=${req.query.q}`,
+        path: `/message?v=20201109&q=${querystring.escape(req.query.q)}`,
         headers: {
             'Authorization': `Bearer ${process.env.WITAI_ACCESS_TOKEN}` 
         }
@@ -37,25 +38,21 @@ module.exports = async function (context, req) {
 /** send request to wit.ai to find message intent */
 function inquireWit(options) {
     return new Promise(function (resolve, reject) {
-        const intent = { confidence: 0 };
+        let intent = { confidence: 0 };
 
         const witReq = https.request(options, function (res) {
             res.setEncoding('utf8');
             res.on('data', function (chunk) {
                 const data = JSON.parse(chunk);
 
-                if (!data.entities || !data.entities.intent) {
-                    witReq.end();
-                    return reject(constants.NO_RELATED_COMMAND);;
+                if (data.intents.length > 0) {
+                    // get the first intent which has highest confidence
+                    intent = data.intents[0];
                 }
-                // select the intent which has highest confidence value
-                for (let item of data.entities.intent) {
-                    if (!item || item.confidence > intent.confidence) {
-                        intent = item;
-                    }
-                }
+
                 //if the confidence value of this intent lower than threshold return reject
                 if (intent.confidence < 0.9) {
+                    witReq.end();
                     return reject(constants.NO_RELATED_COMMAND);
                 }
                 
