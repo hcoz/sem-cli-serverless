@@ -10,6 +10,10 @@
   ],
   "author": "Halil Can Ozcelik",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hcoz/sem-cli-serverless.git"
+  },
   "bugs": {
     "url": "https://github.com/hcoz/sem-cli-serverless/issues"
   },
