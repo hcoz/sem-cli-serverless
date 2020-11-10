@@ -4,18 +4,8 @@ const constants = require('../utils/constants.json');
 const { search } = require('../utils/db');
 
 module.exports = async function (context, req) {
-    // query wit.ai for requested message
-    const options = {
-        hostname: 'api.wit.ai',
-        method: 'GET',
-        path: `/message?v=20201109&q=${querystring.escape(req.query.q)}`,
-        headers: {
-            'Authorization': `Bearer ${process.env.WITAI_ACCESS_TOKEN}` 
-        }
-    };
-
     try {
-        const intent = await inquireWit(options);
+        const intent = await inquireWit(req.query.q);
         const command = await search(intent.name, req.query.os);
         context.res = {
             status: 200,
@@ -25,14 +15,22 @@ module.exports = async function (context, req) {
         context.log(JSON.stringify(error));
         context.res = {
             status: 400,
-            body: constants.ERROR
+            body: error
         };
     }
 }
 
-/** send request to wit.ai to find message intent */
-function inquireWit(options) {
+/** send request to wit.ai to find message's intent */
+function inquireWit(message) {
     return new Promise(function (resolve, reject) {
+        const options = {
+            hostname: 'api.wit.ai',
+            method: 'GET',
+            path: `/message?v=20201109&q=${querystring.escape(message)}`,
+            headers: {
+                'Authorization': `Bearer ${process.env.WITAI_ACCESS_TOKEN}` 
+            }
+        };
         let intent = { confidence: 0 };
 
         const witReq = https.request(options, function (res) {
@@ -45,7 +43,7 @@ function inquireWit(options) {
                     intent = data.intents[0];
                 }
 
-                //if the confidence value of this intent lower than threshold return reject
+                // if the confidence value of this intent lower than threshold then return reject
                 if (intent.confidence < 0.9) {
                     witReq.end();
                     return reject(constants.NO_RELATED_COMMAND);
@@ -57,7 +55,7 @@ function inquireWit(options) {
 
         witReq.on('error', function (e) {
             context.log(constants.WITAI_ERROR + e.message);
-            reject(e.message);
+            reject(constants.ERROR);
         });
 
         witReq.end();
