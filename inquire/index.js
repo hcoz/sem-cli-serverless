@@ -54,7 +54,7 @@ function inquireWit(message) {
         });
 
         witReq.on('error', function (e) {
-            context.log(constants.WITAI_ERROR + e.message);
+            context.log(`Wit.ai error: ${e.message}`);
             reject(constants.ERROR);
         });
 

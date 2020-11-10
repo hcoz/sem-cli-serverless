@@ -1,6 +1,5 @@
 {
     "MISSING_PARAM": "Missing parameters",
     "ERROR": "Error occured",
-    "NO_RELATED_COMMAND": "No related command",
-    "WITAI_ERROR": "wit.ai error: "
+    "NO_RELATED_COMMAND": "No related command"
 }

@@ -5,8 +5,7 @@ const constants = require('./constants.json');
 function search(intent, os) {
     return new Promise(async function (resolve, reject) {
         if (!intent || !os) {
-            reject(constants.MISSING_PARAM);
-            return;
+            return reject(constants.MISSING_PARAM);
         }
 
         try {
@@ -29,8 +28,7 @@ function search(intent, os) {
 function insert({ intent, os, command, dangerLevel }) {
     return new Promise(async function (resolve, reject) {
         if (!intent || !command || !os || !dangerLevel) {
-            reject(constants.MISSING_PARAM);
-            return;
+            return reject(constants.MISSING_PARAM);
         }
 
         try {
@@ -42,7 +40,7 @@ function insert({ intent, os, command, dangerLevel }) {
                 os,
                 command,
                 dangerLevel
-            }
+            };
 
             const { resource } = await container.items.create(newItem);
 
