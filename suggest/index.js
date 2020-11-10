@@ -1,13 +1,12 @@
 const constants = require('../utils/constants.json');
+const { insert } = require('../utils/db');
 
 module.exports = async function (context, req) {
     try {
-        // const data = JSON.parse(req.body);
-        // TODO :: comment out after implementing db connection
-        // await insert(data.intent, data.os, data.command, data.dangerLevel);
+        const newItem = await insert(req.body);
         context.res = {
             status: 200,
-            body: JSON.stringify(req.body)
+            body: newItem.id
         };
     } catch (error) {
         context.log(JSON.stringify(error));
