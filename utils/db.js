@@ -14,7 +14,13 @@ function search(intent, os) {
             const container = database.container('commands');
 
             const { resources } = await container.items
-                .query({ query: `SELECT c.command, c.danger_level FROM c WHERE c.os='${os}' AND c.intent='${intent}'` })
+                .query({
+                    query: 'SELECT c.command, c.dangerLevel FROM c WHERE c.os=@os AND c.intent=@intent',
+                    parameters: [
+                        { name: '@os', value: os },
+                        { name: '@intent', value: intent }
+                    ]
+                })
                 .fetchAll();
 
             resolve(resources[0]);
