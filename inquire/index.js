@@ -1,7 +1,7 @@
 const https = require('https');
 const querystring = require('querystring');
 const constants = require('../utils/constants.json');
-// const { search } = require('../utils/db-query');
+const { search } = require('../utils/db');
 
 module.exports = async function (context, req) {
     // query wit.ai for requested message
@@ -16,16 +16,11 @@ module.exports = async function (context, req) {
 
     try {
         const intent = await inquireWit(options);
+        const command = await search(intent.name, req.query.os);
         context.res = {
             status: 200,
-            body: JSON.stringify(intent)
+            body: JSON.stringify(command)
         };
-        // TODO :: comment out after implementing db connection
-        // const command = await search(intent.value, req.query.os);
-        // context.res = {
-        //     status: 200,
-        //     body: JSON.stringify(command)
-        // };
     } catch (error) {
         context.log(JSON.stringify(error));
         context.res = {
