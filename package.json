@@ -1,13 +1,24 @@
 {
   "name": "sem-cli-serverless",
   "version": "1.0.0",
-  "description": "",
+  "description": "Serverless app for translating human language to computer terminal commands.",
+  "devDependencies": {},
+  "keywords": [
+    "semantic",
+    "serverless",
+    "NLP"
+  ],
+  "author": "Halil Can Ozcelik",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hcoz/sem-cli-serverless/issues"
+  },
+  "homepage": "https://github.com/hcoz/sem-cli-serverless",
   "scripts": {
     "start": "func start",
     "test": "echo \"No tests yet...\""
   },
   "dependencies": {
     "@azure/cosmos": "^3.9.3"
-  },
-  "devDependencies": {}
+  }
 }
